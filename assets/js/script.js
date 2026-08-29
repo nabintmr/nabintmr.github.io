@@ -35,4 +35,24 @@
     btn.addEventListener('click', function () { setLang(btn.dataset.lang); });
     btn.classList.toggle('active', btn.dataset.lang === (htmlEl.getAttribute('lang') || 'en'));
   });
+
+  // Number-key shortcuts: 1=Home 2=Services 3=About 4=Gallery 5=Testimonials 6=Contact
+  var PAGE_MAP = {
+    '1': 'index.html',
+    '2': 'services.html',
+    '3': 'about.html',
+    '4': 'gallery.html',
+    '5': 'testimonials.html',
+    '6': 'contact.html'
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var target = e.target;
+    var tag = target && target.tagName ? target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (target && target.isContentEditable)) return;
+    var dest = PAGE_MAP[e.key];
+    if (dest) {
+      window.location.href = dest;
+    }
+  });
 })();
