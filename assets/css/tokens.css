@@ -1,13 +1,18 @@
 :root {
-  /* Color */
-  --color-navy: #1B3A5C;
-  --color-navy-dark: #122943;
-  --color-gold: #C9962E;
-  --color-gold-light: #E8C77A;
+  /* Color — exact brand colors, verified:
+     Nepal Life Insurance: Matisse blue #1b5490, Cod Gray #111111 (Brandfetch)
+     Lions Clubs International: Yellow #ebb700, Blue #00338d, Dark Blue #0d2240
+     (official LCI brand guidelines). Gold-text is a darker same-hue variant
+     for WCAG-AA text contrast; the exact brand yellow fails as text-on-paper. */
+  --color-navy: #1b5490;
+  --color-navy-dark: #0d2240;
+  --color-gold: #ebb700;
+  --color-gold-light: #f4d668;
+  --color-gold-text: #846700; /* WCAG-AA-safe variant of Lions yellow for text on light backgrounds */
   --color-paper: #FAF8F4;
   --color-paper-alt: #F1ECE1;
-  --color-ink: #2A2A28;
-  --color-ink-soft: #5A5650;
+  --color-ink: #111111;
+  --color-ink-soft: #55565a;
   --color-sage: #5C7A5C;
   --color-border: #E3DDCC;
   --color-white: #FFFFFF;
@@ -38,9 +43,9 @@
   --content-width: 1120px;
   --radius: 10px;
   --radius-lg: 16px;
-  --shadow-sm: 0 1px 3px rgba(27, 58, 92, 0.08);
-  --shadow-md: 0 4px 16px rgba(27, 58, 92, 0.10);
-  --shadow-lg: 0 12px 32px rgba(27, 58, 92, 0.14);
+  --shadow-sm: 0 1px 3px rgba(27, 84, 144, 0.08);
+  --shadow-md: 0 4px 16px rgba(27, 84, 144, 0.10);
+  --shadow-lg: 0 12px 32px rgba(27, 84, 144, 0.14);
 
   /* Motion */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
