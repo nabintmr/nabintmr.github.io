@@ -34,12 +34,12 @@ VERBOSE = "--verbose" in sys.argv
 def ok(msg):
     passes.append(msg)
     if VERBOSE:
-        print(f"  \u2713 {msg}")
+        print(f"  [PASS] {msg}")
 
 
 def err(msg):
     errors.append(msg)
-    print(f"  \u2717 {msg}")
+    print(f"  [FAIL] {msg}")
 
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
@@ -153,6 +153,46 @@ def check_js_syntax():
             ok(f"{f} syntax OK")
 
 
+def check_commit_sha_integrity():
+    print("\n[7/7] Commit SHA & placeholder integrity")
+    placeholder_pattern = re.compile(r"\b(rel\d+|upg\d+|xtool\d+|dummy|todo)\b", re.IGNORECASE)
+    commit_url_pattern = re.compile(r"github\.com/[^/]+/[^/]+/commit/([a-zA-Z0-9_\-]+)")
+    sha_prop_pattern = re.compile(r"""sha:\s*['"]([^'"]+)['"]""")
+    hex_sha_pattern = re.compile(r"^[0-9a-f]{7,40}$", re.IGNORECASE)
+
+    scanned_extensions = {".md", ".html", ".js", ".json", ".py", ".css"}
+    bad_shas = []
+
+    for root_dir, _, files in os.walk("."):
+        if any(d in root_dir for d in [".git", "node_modules", ".venv", "__pycache__"]):
+            continue
+        for file in files:
+            ext = os.path.splitext(file)[1].lower()
+            if ext in scanned_extensions:
+                file_path = os.path.join(root_dir, file)
+                try:
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as fh:
+                        content = fh.read()
+                except Exception:
+                    continue
+
+                for m in commit_url_pattern.finditer(content):
+                    sha = m.group(1)
+                    if placeholder_pattern.match(sha) or not hex_sha_pattern.match(sha):
+                        bad_shas.append(f"{file_path}: invalid commit URL SHA '{sha}'")
+
+                for m in sha_prop_pattern.finditer(content):
+                    sha = m.group(1)
+                    if placeholder_pattern.match(sha) or not hex_sha_pattern.match(sha):
+                        bad_shas.append(f"{file_path}: invalid sha property '{sha}'")
+
+    if bad_shas:
+        for b in bad_shas:
+            err(b)
+    else:
+        ok("all commit SHAs are authentic 7-40 hex format (0 placeholders found)")
+
+
 def main():
     pages = sorted(glob.glob("*.html"))
     print(f"Checking {len(pages)} pages in {ROOT}")
@@ -163,6 +203,7 @@ def main():
     check_nav_active(pages)
     check_css_braces()
     check_js_syntax()
+    check_commit_sha_integrity()
 
     print(f"\n{'='*50}")
     print(f"Passed: {len(passes)}   Errors: {len(errors)}")
@@ -175,3 +216,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -40,11 +40,17 @@ function Write-Step($msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Write-Err($msg)  { Write-Host "ERROR: $msg" -ForegroundColor Red }
 
 # ── 1. Pull ─────────────────────────────────────────────────────────
-Write-Step "Pulling remote changes (--autostash)..."
-git pull --autostash origin main
-if ($LASTEXITCODE -ne 0) {
-    Write-Err "git pull failed. Resolve conflicts before continuing."
-    exit 1
+$currentBranch = (git branch --show-current).Trim()
+$remoteBranchExists = git ls-remote --heads origin $currentBranch 2>$null
+if ($remoteBranchExists) {
+    Write-Step "Pulling remote changes on $currentBranch (--autostash)..."
+    git pull --autostash origin $currentBranch
+    if ($LASTEXITCODE -ne 0) {
+        Write-Err "git pull failed. Resolve conflicts before continuing."
+        exit 1
+    }
+} else {
+    Write-Step "Branch $currentBranch is local-only. Skipping initial pull."
 }
 
 if ($PullOnly) {
@@ -87,7 +93,7 @@ git add -A
 Write-Step "Committing: $Message"
 git commit -m "$Message"
 
-Write-Step "Pushing to origin main..."
-git push origin main
+Write-Step "Pushing to origin $currentBranch..."
+git push -u origin $currentBranch
 
 Write-Step "Done."
