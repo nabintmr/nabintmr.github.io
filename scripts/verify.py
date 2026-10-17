@@ -81,19 +81,25 @@ def check_tag_balance(pages):
 def check_internal_links(pages):
     print("\n[2/8] Internal link targets")
     page_set = set(pages)
+    page_contents = {p: open(p, encoding="utf-8").read() for p in pages}
     for f in pages:
-        content = open(f, encoding="utf-8").read()
+        content = page_contents[f]
         for h in re.findall(r'href="([^"]+)"', content):
             if h.startswith(("http", "#", "mailto:", "tel:")):
                 continue
             if h.startswith("assets/"):
                 continue  # checked separately
-            if h not in page_set:
+            # Strip fragment for file resolution, and verify fragment target if present
+            base_file = h.split("#")[0]
+            fragment = h.split("#")[1] if "#" in h else None
+            if base_file not in page_set:
                 err(f"{f}: broken internal link '{h}'")
-        else:
-            pass
+            elif fragment:
+                target_html = page_contents[base_file]
+                if not re.search(rf'id="{re.escape(fragment)}"', target_html):
+                    err(f"{f}: link '{h}' points to missing element id '{fragment}' in '{base_file}'")
     if not any("broken internal link" in e for e in errors):
-        ok("all internal page links resolve")
+        ok("all internal page links and anchors resolve")
 
 
 def check_asset_refs(pages):
