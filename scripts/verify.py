@@ -67,7 +67,7 @@ class TagChecker(HTMLParser):
 
 
 def check_tag_balance(pages):
-    print("\n[1/6] HTML tag balance")
+    print("\n[1/8] HTML tag balance")
     for f in pages:
         content = open(f, encoding="utf-8").read()
         c = TagChecker()
@@ -79,7 +79,7 @@ def check_tag_balance(pages):
 
 
 def check_internal_links(pages):
-    print("\n[2/6] Internal link targets")
+    print("\n[2/8] Internal link targets")
     page_set = set(pages)
     for f in pages:
         content = open(f, encoding="utf-8").read()
@@ -97,7 +97,7 @@ def check_internal_links(pages):
 
 
 def check_asset_refs(pages):
-    print("\n[3/6] Local asset references (css/js/img)")
+    print("\n[3/8] Local asset references (css/js/img)")
     missing = False
     for f in pages:
         content = open(f, encoding="utf-8").read()
@@ -111,7 +111,7 @@ def check_asset_refs(pages):
 
 
 def check_nav_active(pages):
-    print("\n[4/6] Nav active-state consistency")
+    print("\n[4/8] Nav active-state consistency")
     for f in pages:
         content = open(f, encoding="utf-8").read()
         count = len(re.findall(r'class="active"', content))
@@ -122,7 +122,7 @@ def check_nav_active(pages):
 
 
 def check_css_braces():
-    print("\n[5/6] CSS brace balance")
+    print("\n[5/8] CSS brace balance")
     for f in sorted(glob.glob("assets/css/*.css")):
         content = open(f, encoding="utf-8").read()
         o, c = content.count("{"), content.count("}")
@@ -133,7 +133,7 @@ def check_css_braces():
 
 
 def check_js_syntax():
-    print("\n[6/6] JS syntax")
+    print("\n[6/8] JS syntax")
     node = None
     for candidate in ("node", "nodejs"):
         try:
@@ -154,7 +154,7 @@ def check_js_syntax():
 
 
 def check_commit_sha_integrity():
-    print("\n[7/7] Commit SHA & placeholder integrity")
+    print("\n[7/8] Commit SHA & placeholder integrity")
     placeholder_pattern = re.compile(r"\b(rel\d+|upg\d+|xtool\d+|dummy|todo)\b", re.IGNORECASE)
     commit_url_pattern = re.compile(r"github\.com/[^/]+/[^/]+/commit/([a-zA-Z0-9_\-]+)")
     sha_prop_pattern = re.compile(r"""sha:\s*['"]([^'"]+)['"]""")
@@ -193,6 +193,34 @@ def check_commit_sha_integrity():
         ok("all commit SHAs are authentic 7-40 hex format (0 placeholders found)")
 
 
+def check_mobile_zero_invariants(pages):
+    print("\n[8/8] Mobile-Zero responsive invariants")
+    for f in pages:
+        content = open(f, encoding="utf-8").read()
+        if not re.search(r'<meta\s+name="viewport"[^>]*width=device-width[^>]*viewport-fit=cover', content):
+            err(f"{f}: missing Mobile-Zero viewport meta tag (width=device-width, viewport-fit=cover)")
+        else:
+            ok(f"{f} has Mobile-Zero viewport meta")
+        if re.search(r'style="[^"]*grid-template-columns', content):
+            err(f"{f}: contains unguarded inline grid-template-columns")
+        else:
+            ok(f"{f} has zero inline grid-template-columns")
+
+    comp_css = open("assets/css/components.css", encoding="utf-8").read()
+    if re.search(r"@media\s*\(\s*max-width\s*:", comp_css):
+        err("assets/css/components.css: contains desktop-first @media (max-width: ...) rule")
+    else:
+        ok("assets/css/components.css uses 100% mobile-first min-width media queries")
+    if "@container" not in comp_css or "container-type: inline-size" not in comp_css:
+        err("assets/css/components.css: missing size-aware @container queries")
+    else:
+        ok("assets/css/components.css implements size-aware @container queries")
+    if "env(safe-area-inset-bottom" not in comp_css or "85dvh" not in comp_css:
+        err("assets/css/components.css: missing safe-area-inset-bottom or dvh dynamic viewport units")
+    else:
+        ok("assets/css/components.css enforces safe-area-inset-bottom and dvh dynamic viewport units")
+
+
 def main():
     pages = sorted(glob.glob("*.html"))
     print(f"Checking {len(pages)} pages in {ROOT}")
@@ -204,6 +232,7 @@ def main():
     check_css_braces()
     check_js_syntax()
     check_commit_sha_integrity()
+    check_mobile_zero_invariants(pages)
 
     print(f"\n{'='*50}")
     print(f"Passed: {len(passes)}   Errors: {len(errors)}")
