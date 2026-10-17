@@ -20,7 +20,7 @@
 
   function updateButtons(lang) {
     document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
   }
 
@@ -31,6 +31,9 @@
     updateButtons(lang);
   }
 
+  // Expose on window for direct access
+  window.setSiteLang = setLang;
+
   // Read saved language or default to en
   var currentLang = 'en';
   try {
@@ -39,14 +42,24 @@
   } catch (e) {}
   setLang(currentLang);
 
-  // Global event delegation for lang toggle buttons
-  document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('.lang-toggle button') : null;
-    if (btn && btn.dataset && btn.dataset.lang) {
-      e.preventDefault();
-      setLang(btn.dataset.lang);
+  // Global event listener using pointerdown and click for immediate feedback
+  function handleLangClick(e) {
+    var target = e.target;
+    while (target && target !== document.body) {
+      if (target.matches && target.matches('.lang-toggle button')) {
+        var lang = target.getAttribute('data-lang');
+        if (lang) {
+          e.preventDefault();
+          e.stopPropagation();
+          setLang(lang);
+        }
+        return;
+      }
+      target = target.parentElement;
     }
-  });
+  }
+
+  document.addEventListener('click', handleLangClick, true);
 
   // Re-sync on DOMContentLoaded if needed
   if (document.readyState === 'loading') {
