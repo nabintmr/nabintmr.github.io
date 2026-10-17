@@ -75,32 +75,48 @@
             </ul>
           </div>
 
-          <form class="contact-form" action="#" method="POST">
+          <form id="contactForm" class="contact-form" action="#" method="POST" novalidate>
+            <!-- Bot honeypot trap -->
+            <div style="display:none;" aria-hidden="true">
+              <label for="form-hp">Do not fill this field</label>
+              <input type="text" id="form-hp" name="_hp" tabindex="-1" autocomplete="off" />
+            </div>
+
             <div>
               <label for="name">
-                <span data-lang="en">Your Name</span>
-                <span data-lang="ne">तपाईंको पुरा नाम</span>
+                <span data-lang="en">Your Name <span style="color:#d93025;">*</span></span>
+                <span data-lang="ne">तपाईंको पुरा नाम <span style="color:#d93025;">*</span></span>
               </label>
-              <input type="text" id="name" name="name" required />
+              <input type="text" id="name" name="name" required autocomplete="name" />
             </div>
             <div>
               <label for="phone">
-                <span data-lang="en">Phone Number</span>
-                <span data-lang="ne">सम्पर्क नम्बर</span>
+                <span data-lang="en">Phone Number <span style="color:#d93025;">*</span></span>
+                <span data-lang="ne">सम्पर्क नम्बर <span style="color:#d93025;">*</span></span>
               </label>
-              <input type="tel" id="phone" name="phone" required />
+              <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="+977 98XXXXXXXX" />
+            </div>
+            <div>
+              <label for="email">
+                <span data-lang="en">Email Address <span style="font-weight:400; color:var(--color-ink-soft); font-size:0.85em;">(Optional)</span></span>
+                <span data-lang="ne">इमेल ठेगाना <span style="font-weight:400; color:var(--color-ink-soft); font-size:0.85em;">(ऐच्छिक)</span></span>
+              </label>
+              <input type="email" id="email" name="email" autocomplete="email" placeholder="example@gmail.com" />
             </div>
             <div>
               <label for="message">
-                <span data-lang="en">Message</span>
-                <span data-lang="ne">सन्देश / विवरण</span>
+                <span data-lang="en">Message <span style="color:#d93025;">*</span></span>
+                <span data-lang="ne">सन्देश / विवरण <span style="color:#d93025;">*</span></span>
               </label>
               <textarea id="message" name="message" rows="4" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">
-              <span data-lang="en">Send Message</span>
-              <span data-lang="ne">सन्देश पठाउनुहोस्</span>
+            <button type="submit" id="form-btn" class="btn btn-primary">
+              <span id="btn-text">
+                <span data-lang="en">Send Message</span>
+                <span data-lang="ne">सन्देश पठाउनुहोस्</span>
+              </span>
             </button>
+            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
             <p style="font-size: var(--fs-small); color: var(--color-ink-soft);">
               <span data-lang="en">Prefer an immediate reply? You can also message directly on WhatsApp at +977 984-2649491.</span>
               <span data-lang="ne">तुरुन्तै जवाफ चाहनुहुन्छ भने सोझै ह्वाट्सएप +९७७ ९८४२६४९४९१ मा सन्देश पठाउन सक्नुहुन्छ।</span>

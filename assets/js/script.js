@@ -145,4 +145,119 @@
       return false;
     });
   }
+
+  // ── Google Forms Headless Contact Intake ────────────────────────
+  // Configured via scripts/setup_google_form_trigger.gs
+  // Run setupNabinContactForm() in script.google.com under nabintmr@gmail.com
+  // and paste the logged output values below:
+  var GOOGLE_FORM = {
+    actionUrl: '',
+    entries: {
+      name: '',
+      phone: '',
+      email: '',
+      message: '',
+    },
+    enabled: false,
+  };
+
+  // Expose on window for easy verification/override if needed
+  window.NABIN_GOOGLE_FORM = GOOGLE_FORM;
+
+  // Contact Form Submission Handler
+  var contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      var btn = document.getElementById('form-btn');
+      var btnText = document.getElementById('btn-text');
+      var status = document.getElementById('form-status');
+      var nameInput = document.getElementById('name');
+      var phoneInput = document.getElementById('phone');
+      var emailInput = document.getElementById('email');
+      var messageInput = document.getElementById('message');
+      var hpInput = document.getElementById('form-hp');
+
+      // Bot honeypot trap: silently fake success without dispatch
+      if (hpInput && hpInput.value.trim()) {
+        btn.disabled = true;
+        btnText.innerHTML = '<span data-lang="en">Sending...</span><span data-lang="ne">पठाउँदै...</span>';
+        setTimeout(function () {
+          status.innerHTML = '<div class="form-status-badge success"><span>✓</span><div><span data-lang="en">Message sent successfully! I will contact you soon.</span><span data-lang="ne">सन्देश सफलतापूर्वक पठाइयो! म चाँडै सम्पर्क गर्नेछु।</span></div></div>';
+          contactForm.reset();
+          btn.disabled = false;
+          btnText.innerHTML = '<span data-lang="en">Send Message</span><span data-lang="ne">सन्देश पठाउनुहोस्</span>';
+        }, 600);
+        return;
+      }
+
+      var nameVal = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
+      var phoneVal = (phoneInput && phoneInput.value) ? phoneInput.value.trim() : '';
+      var emailVal = (emailInput && emailInput.value) ? emailInput.value.trim() : '';
+      var messageVal = (messageInput && messageInput.value) ? messageInput.value.trim() : '';
+
+      // Validation
+      if (!nameVal) {
+        status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Please enter your name.</span><span data-lang="ne">कृपया तपाईंको पुरा नाम लेख्नुहोस्।</span></div></div>';
+        if (nameInput) nameInput.focus();
+        return;
+      }
+
+      if (!phoneVal) {
+        status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Please enter your contact phone number.</span><span data-lang="ne">कृपया तपाईंको सम्पर्क नम्बर लेख्नुहोस्।</span></div></div>';
+        if (phoneInput) phoneInput.focus();
+        return;
+      }
+
+      if (emailVal && emailInput && !emailInput.checkValidity()) {
+        status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Please enter a valid email address.</span><span data-lang="ne">कृपया मान्य इमेल ठेगाना लेख्नुहोस्।</span></div></div>';
+        emailInput.focus();
+        return;
+      }
+
+      if (!messageVal) {
+        status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Please enter your message.</span><span data-lang="ne">कृपया आफ्नो सन्देश / विवरण लेख्नुहोस्।</span></div></div>';
+        if (messageInput) messageInput.focus();
+        return;
+      }
+
+      // UI Sending State
+      btn.disabled = true;
+      btnText.innerHTML = '<span data-lang="en">Sending...</span><span data-lang="ne">पठाउँदै...</span>';
+      status.innerHTML = '';
+
+      // Check if Google Forms is active
+      if (GOOGLE_FORM.enabled && GOOGLE_FORM.actionUrl) {
+        try {
+          var gfData = new FormData();
+          if (GOOGLE_FORM.entries.name) gfData.append(GOOGLE_FORM.entries.name, nameVal);
+          if (GOOGLE_FORM.entries.phone) gfData.append(GOOGLE_FORM.entries.phone, phoneVal);
+          if (GOOGLE_FORM.entries.email) gfData.append(GOOGLE_FORM.entries.email, emailVal);
+          if (GOOGLE_FORM.entries.message) gfData.append(GOOGLE_FORM.entries.message, messageVal);
+
+          await fetch(GOOGLE_FORM.actionUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: gfData,
+          });
+
+          status.innerHTML = '<div class="form-status-badge success"><span>✓</span><div><span data-lang="en">Message sent successfully! I will contact you soon.</span><span data-lang="ne">सन्देश सफलतापूर्वक पठाइयो! म चाँडै सम्पर्क गर्नेछु।</span></div></div>';
+          contactForm.reset();
+        } catch (err) {
+          console.warn('Google Form submission failed:', err);
+          status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Submission failed. Please message via <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">WhatsApp</a> or call +977 984-2649491.</span><span data-lang="ne">सन्देश पठाउन सकिएन। कृपया <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">ह्वाट्सएप</a> वा +९७७ ९८४२६४९४९१ मा सम्पर्क गर्नुहोस्।</span></div></div>';
+        }
+      } else {
+        // Fallback when Google Form is not yet configured: direct WhatsApp
+        var encodedMsg = encodeURIComponent('Namaste Nabin dai,\n\nName: ' + nameVal + '\nPhone: ' + phoneVal + (emailVal ? '\nEmail: ' + emailVal : '') + '\n\nMessage:\n' + messageVal);
+        var waUrl = 'https://wa.me/9779842649491?text=' + encodedMsg;
+        window.open(waUrl, '_blank');
+        status.innerHTML = '<div class="form-status-badge warning"><span>ℹ</span><div><span data-lang="en">Opening WhatsApp with your pre-filled message...</span><span data-lang="ne">तपाईंको सन्देशसहित ह्वाट्सएप खुल्दैछ...</span></div></div>';
+      }
+
+      btn.disabled = false;
+      btnText.innerHTML = '<span data-lang="en">Send Message</span><span data-lang="ne">सन्देश पठाउनुहोस्</span>';
+    });
+  }
 })();
