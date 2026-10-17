@@ -96,6 +96,13 @@
     var target = e.target;
     var tag = target && target.tagName ? target.tagName.toLowerCase() : '';
     if (tag === 'input' || tag === 'textarea' || tag === 'select' || (target && target.isContentEditable)) return;
+    // 'L' or 'l' key: toggle language between English and Nepali
+    if (e.key === 'l' || e.key === 'L') {
+      var current = htmlEl.getAttribute('lang') || 'en';
+      setLang(current === 'en' ? 'ne' : 'en');
+      return;
+    }
+
     var dest = PAGE_MAP[e.key];
     if (dest) {
       window.location.href = dest;
@@ -160,17 +167,15 @@
 
   // ── Google Forms Headless Contact Intake ────────────────────────
   // Configured via scripts/setup_google_form_trigger.gs
-  // Run setupNabinContactForm() in script.google.com under nabintmr@gmail.com
-  // and paste the logged output values below:
   var GOOGLE_FORM = {
-    actionUrl: '',
+    actionUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeccAfX7hT-2fUazejSbacsSMcek32dZOHdjztNLtj1wXOqVg/formResponse',
     entries: {
-      name: '',
-      phone: '',
-      email: '',
-      message: '',
+      name: 'entry.1217364634',
+      phone: 'entry.299211963',
+      email: 'entry.170838118',
+      message: 'entry.389128023',
     },
-    enabled: false,
+    enabled: true,
   };
 
   // Expose on window for easy verification/override if needed
@@ -258,14 +263,14 @@
           contactForm.reset();
         } catch (err) {
           console.warn('Google Form submission failed:', err);
-          status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Submission failed. Please message via <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">WhatsApp</a> or call +977 984-2649491.</span><span data-lang="ne">सन्देश पठाउन सकिएन। कृपया <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">ह्वाट्सएप</a> वा +९७७ ९८४२६४९४९१ मा सम्पर्क गर्नुहोस्।</span></div></div>';
+          status.innerHTML = '<div class="form-status-badge error"><span>⚠</span><div><span data-lang="en">Submission failed. Please message via <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">WhatsApp</a> or call +977 984-2649491.</span><span data-lang="ne">सन्देश पठाउन सकिएन। कृपया <a href="https://wa.me/9779842649491" target="_blank" rel="noopener">WhatsApp</a> वा +977 984-2649491 मा सम्पर्क गर्नुहोस्।</span></div></div>';
         }
       } else {
         // Fallback when Google Form is not yet configured: direct WhatsApp
         var encodedMsg = encodeURIComponent('Namaste Nabin dai,\n\nName: ' + nameVal + '\nPhone: ' + phoneVal + (emailVal ? '\nEmail: ' + emailVal : '') + '\n\nMessage:\n' + messageVal);
         var waUrl = 'https://wa.me/9779842649491?text=' + encodedMsg;
         window.open(waUrl, '_blank');
-        status.innerHTML = '<div class="form-status-badge warning"><span>ℹ</span><div><span data-lang="en">Opening WhatsApp with your pre-filled message...</span><span data-lang="ne">तपाईंको सन्देशसहित ह्वाट्सएप खुल्दैछ...</span></div></div>';
+        status.innerHTML = '<div class="form-status-badge warning"><span>ℹ</span><div><span data-lang="en">Opening WhatsApp with your pre-filled message...</span><span data-lang="ne">तपाईंको सन्देशसहित WhatsApp खुल्दैछ...</span></div></div>';
       }
 
       btn.disabled = false;
