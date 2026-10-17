@@ -14,21 +14,24 @@
   <link rel="stylesheet" href="assets/css/components.css" />
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#main-content" class="skip-link"><span data-lang="en">Skip to main content</span><span data-lang="ne">मुख्य विषयमा जानुहोस्</span></a>
 
   <nav class="site-nav" aria-label="Primary navigation">
     <div class="container">
-      <a href="index.html" class="nav-logo">Nabin Tamrakar</a>
+      <a href="index.html" class="nav-logo">
+        <span data-lang="en">Nabin Tamrakar</span>
+        <span data-lang="ne">नविन ताम्राकार</span>
+      </a>
       <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="testimonials.html">Testimonials</a></li>
-        <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
+        <li><a href="index.html"><span data-lang="en">Home</span><span data-lang="ne">गृहपृष्ठ</span></a></li>
+        <li><a href="services.html"><span data-lang="en">Services</span><span data-lang="ne">सेवाहरू</span></a></li>
+        <li><a href="about.html"><span data-lang="en">About</span><span data-lang="ne">परिचय</span></a></li>
+        <li><a href="gallery.html"><span data-lang="en">Gallery</span><span data-lang="ne">तस्बिरहरू</span></a></li>
+        <li><a href="testimonials.html"><span data-lang="en">Testimonials</span><span data-lang="ne">प्रतिक्रिया</span></a></li>
+        <li><a href="contact.html" class="active" aria-current="page"><span data-lang="en">Contact</span><span data-lang="ne">सम्पर्क</span></a></li>
       </ul>
       <div style="display:flex; align-items:center; gap:0.75rem;">
         <div class="lang-toggle">
@@ -44,8 +47,14 @@
     <section class="section" style="padding-top: var(--space-5);">
       <div class="container">
         <div class="section-head">
-          <h1>Get in Touch</h1>
-          <p>The fastest way to reach me is WhatsApp. I'm happy to answer any questions.</p>
+          <h1>
+            <span data-lang="en">Get in Touch</span>
+            <span data-lang="ne">सम्पर्क गर्नुहोस्</span>
+          </h1>
+          <p>
+            <span data-lang="en">The fastest way to reach me is WhatsApp. I'm happy to answer any questions.</span>
+            <span data-lang="ne">मलाई सम्पर्क गर्ने सबैभन्दा छिटो माध्यम ह्वाट्सएप हो। म खुशीसाथ तपाईंका जिज्ञासा सम्बोधन गर्नेछु।</span>
+          </p>
         </div>
 
         <div class="contact-grid">
@@ -68,19 +77,34 @@
 
           <form class="contact-form" action="#" method="POST">
             <div>
-              <label for="name">Your Name</label>
+              <label for="name">
+                <span data-lang="en">Your Name</span>
+                <span data-lang="ne">तपाईंको पुरा नाम</span>
+              </label>
               <input type="text" id="name" name="name" required />
             </div>
             <div>
-              <label for="phone">Phone Number</label>
+              <label for="phone">
+                <span data-lang="en">Phone Number</span>
+                <span data-lang="ne">सम्पर्क नम्बर</span>
+              </label>
               <input type="tel" id="phone" name="phone" required />
             </div>
             <div>
-              <label for="message">Message</label>
+              <label for="message">
+                <span data-lang="en">Message</span>
+                <span data-lang="ne">सन्देश / विवरण</span>
+              </label>
               <textarea id="message" name="message" rows="4" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-            <p style="font-size: var(--fs-small); color: var(--color-ink-soft);">Prefer an immediate reply? You can also message directly on WhatsApp at +977 984-2649491.</p>
+            <button type="submit" class="btn btn-primary">
+              <span data-lang="en">Send Message</span>
+              <span data-lang="ne">सन्देश पठाउनुहोस्</span>
+            </button>
+            <p style="font-size: var(--fs-small); color: var(--color-ink-soft);">
+              <span data-lang="en">Prefer an immediate reply? You can also message directly on WhatsApp at +977 984-2649491.</span>
+              <span data-lang="ne">तुरुन्तै जवाफ चाहनुहुन्छ भने सोझै ह्वाट्सएप +९७७ ९८४२६४९४९१ मा सन्देश पठाउन सक्नुहुन्छ।</span>
+            </p>
           </form>
         </div>
       </div>
@@ -91,8 +115,14 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <div class="footer-brand">Nabin Tamrakar</div>
-          <p style="margin-top:0.5rem; max-width:32ch;">Insurance · Community · Share Market</p>
+          <div class="footer-brand">
+            <span data-lang="en">Nabin Tamrakar</span>
+            <span data-lang="ne">नविन ताम्राकार</span>
+          </div>
+          <p style="margin-top:0.5rem; max-width:32ch;">
+            <span data-lang="en">Insurance · Community · Share Market</span>
+            <span data-lang="ne">बीमा · सामाजिक सेवा · सेयर बजार</span>
+          </p>
         </div>
         <ul class="contact-list">
           <li><a href="https://wa.me/9779842649491" target="_blank" rel="noopener">WhatsApp</a></li>
@@ -105,7 +135,10 @@
   </footer>
 
   <div class="mobile-cta-bar">
-    <a href="https://wa.me/9779842649491" class="btn btn-primary" target="_blank" rel="noopener">Message on WhatsApp</a>
+    <a href="https://wa.me/9779842649491" class="btn btn-primary" target="_blank" rel="noopener">
+      <span data-lang="en">Message on WhatsApp</span>
+      <span data-lang="ne">ह्वाट्सएपमा कुरा गर्नुहोस्</span>
+    </a>
   </div>
 
   <script src="assets/js/script.js"></script>
