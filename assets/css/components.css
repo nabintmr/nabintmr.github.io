@@ -385,17 +385,46 @@ dialog.license-dialog::backdrop {
   width: 35%;
 }
 .license-image-wrap {
+  position: relative;
   margin: var(--space-2) 0 var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--color-paper-alt);
   box-shadow: var(--shadow-sm);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .license-image-wrap img {
   display: block;
   width: 100%;
   height: auto;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+}
+.license-view-guard {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+.license-watermark {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: rgba(27, 84, 144, 0.14);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transform: rotate(-30deg);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
 }
 .dialog-actions {
   display: flex;

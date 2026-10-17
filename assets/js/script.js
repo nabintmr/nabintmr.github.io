@@ -121,5 +121,15 @@
         }
       }
     });
+
+    // Strict View-Only Guards: disable context menu, image dragging, and saving within modal
+    licenseModal.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+      return false;
+    });
+    licenseModal.addEventListener('dragstart', function (e) {
+      e.preventDefault();
+      return false;
+    });
   }
 })();
