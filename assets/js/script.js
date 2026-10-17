@@ -20,7 +20,10 @@
 
   function updateButtons(lang) {
     document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      var btnLang = btn.getAttribute('data-lang-btn') || btn.getAttribute('data-lang');
+      var isActive = (btnLang === lang);
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
   }
 
@@ -42,17 +45,26 @@
   } catch (e) {}
   setLang(currentLang);
 
-  // Global event listener using pointerdown and click for immediate feedback
+  // Global event listener for language toggling
   function handleLangClick(e) {
     var target = e.target;
     while (target && target !== document.body) {
       if (target.matches && target.matches('.lang-toggle button')) {
-        var lang = target.getAttribute('data-lang');
-        if (lang) {
-          e.preventDefault();
-          e.stopPropagation();
-          setLang(lang);
-        }
+        var targetLang = target.getAttribute('data-lang-btn') || target.getAttribute('data-lang');
+        var current = htmlEl.getAttribute('lang') || 'en';
+        // If clicking the button that is already active, toggle to the other language!
+        // If clicking the inactive button, switch to that button's language.
+        var nextLang = (targetLang === current) ? (current === 'en' ? 'ne' : 'en') : (targetLang || (current === 'en' ? 'ne' : 'en'));
+        e.preventDefault();
+        e.stopPropagation();
+        setLang(nextLang);
+        return;
+      }
+      if (target.matches && target.matches('.lang-toggle')) {
+        var current = htmlEl.getAttribute('lang') || 'en';
+        e.preventDefault();
+        e.stopPropagation();
+        setLang(current === 'en' ? 'ne' : 'en');
         return;
       }
       target = target.parentElement;
