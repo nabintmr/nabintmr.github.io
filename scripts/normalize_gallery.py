@@ -6,8 +6,9 @@ Features:
 1. Discovers all images in assets/images/gallery/
 2. Extracts capture/creation time (EXIF Date Taken, WhatsApp sequence, or file creation time)
 3. Sorts images chronologically
-4. Normalizes names to gallery-01.jpg, gallery-02.jpg, ...
-5. Automatically syncs <div class="gallery-grid"> in gallery.html
+4. Compresses & converts images to WebP (gallery-01.webp, gallery-02.webp, ...)
+5. Automatically syncs <div class="gallery-grid"> in gallery.html with non-clickable <img> tags
+6. Removes legacy raw JPEG/PNG assets once WebP is generated
 """
 
 import os
@@ -15,6 +16,12 @@ import re
 import struct
 import datetime
 from pathlib import Path
+
+try:
+    from PIL import Image
+    HAS_PILLOW = True
+except ImportError:
+    HAS_PILLOW = False
 
 ROOT = Path(__file__).resolve().parent.parent
 GALLERY_DIR = ROOT / "assets" / "images" / "gallery"
@@ -97,13 +104,14 @@ def update_gallery_html(image_filenames):
     new_items = []
     for idx, fname in enumerate(image_filenames, start=1):
         rel_path = f"assets/images/gallery/{fname}"
-        item = f'          <a href="{rel_path}"><img src="{rel_path}" alt="Community outreach moment {idx}" loading="lazy" decoding="async"></a>'
+        # Non-clickable img element
+        item = f'          <img src="{rel_path}" alt="Community outreach moment {idx}" loading="lazy" decoding="async">'
         new_items.append(item)
 
     new_grid_content = "\n" + "\n".join(new_items) + "\n        "
     updated_html = content[:match.start(2)] + new_grid_content + content[match.end(2):]
     GALLERY_HTML.write_text(updated_html, encoding="utf-8")
-    print(f"Updated {GALLERY_HTML.name} with {len(image_filenames)} photos.")
+    print(f"Updated {GALLERY_HTML.name} with {len(image_filenames)} non-clickable photos.")
 
 
 def main():
@@ -119,27 +127,45 @@ def main():
     sorted_files = sorted(files, key=get_sort_key)
     print(f"Found {len(sorted_files)} gallery photos. Normalizing order...")
 
-    # Two-pass rename to prevent collisions
-    temp_names = []
+    # Stage 1: Temporary renames to preserve order and avoid collisions
+    temp_files = []
     for idx, fname in enumerate(sorted_files, start=1):
-        temp_name = f"__gal_tmp_{idx:03d}.jpg"
-        temp_names.append(temp_name)
+        ext = Path(fname).suffix.lower()
+        temp_name = f"__gal_tmp_{idx:03d}{ext}"
         src = GALLERY_DIR / fname
         dst = GALLERY_DIR / temp_name
         if src != dst:
             os.rename(src, dst)
+        temp_files.append((temp_name, ext))
 
+    # Stage 2: Convert to WebP or normalize
     final_names = []
-    for idx, temp_name in enumerate(temp_names, start=1):
-        final_name = f"gallery-{idx:02d}.jpg"
-        final_names.append(final_name)
+    for idx, (temp_name, ext) in enumerate(temp_files, start=1):
         src = GALLERY_DIR / temp_name
-        dst = GALLERY_DIR / final_name
-        if src != dst:
-            os.rename(src, dst)
+        if HAS_PILLOW:
+            final_name = f"gallery-{idx:02d}.webp"
+            dst = GALLERY_DIR / final_name
+            with Image.open(src) as img:
+                # Convert RGBA/P to RGB if necessary for webp saving
+                if img.mode in ("RGBA", "LA") and ext != ".png":
+                    rgb_img = Image.new("RGB", img.size, (255, 255, 255))
+                    rgb_img.paste(img, mask=img.split()[-1])
+                    rgb_img.save(dst, "WEBP", quality=82, method=6)
+                elif img.mode != "RGB":
+                    img.convert("RGB").save(dst, "WEBP", quality=82, method=6)
+                else:
+                    img.save(dst, "WEBP", quality=82, method=6)
+            if src.name != dst.name:
+                os.remove(src)
+        else:
+            final_name = f"gallery-{idx:02d}{ext}"
+            dst = GALLERY_DIR / final_name
+            if src != dst:
+                os.rename(src, dst)
+        final_names.append(final_name)
 
     update_gallery_html(final_names)
-    print("Gallery normalization complete.")
+    print("Gallery normalization & WebP compression complete.")
 
 
 if __name__ == "__main__":
