@@ -55,4 +55,50 @@
       window.location.href = dest;
     }
   });
+
+  // Native Dialog Modal Controller (Light-dismiss & trigger binding)
+  var licenseModal = document.getElementById('license-modal');
+  var openLicenseBtns = document.querySelectorAll('.open-license-modal');
+  var closeLicenseBtns = document.querySelectorAll('.close-license-modal');
+
+  if (licenseModal) {
+    openLicenseBtns.forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (typeof licenseModal.showModal === 'function') {
+          licenseModal.showModal();
+        } else {
+          licenseModal.setAttribute('open', '');
+        }
+      });
+    });
+
+    closeLicenseBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (typeof licenseModal.close === 'function') {
+          licenseModal.close();
+        } else {
+          licenseModal.removeAttribute('open');
+        }
+      });
+    });
+
+    // Light-dismiss: click on backdrop dismisses dialog
+    licenseModal.addEventListener('click', function (event) {
+      var rect = licenseModal.getBoundingClientRect();
+      var isInDialog = (
+        rect.top <= event.clientY &&
+        event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.left + rect.width
+      );
+      if (!isInDialog) {
+        if (typeof licenseModal.close === 'function') {
+          licenseModal.close();
+        } else {
+          licenseModal.removeAttribute('open');
+        }
+      }
+    });
+  }
 })();

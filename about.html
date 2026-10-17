@@ -73,8 +73,88 @@
             <p>Hands-on support for beginners entering the Nepal capital market, from DEMAT and MeroShare setup to primary market IPO, FPO, right share, and debenture applications.</p>
           </div>
         </div>
+
+        <div class="credential-banner">
+          <div class="credential-info">
+            <div class="credential-badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div>
+              <div class="credential-title">Verified Insurance Agent License</div>
+              <div class="credential-sub">
+                Regulated by <strong>Nepal Insurance Authority</strong> (नेपाल बीमा प्राधिकरण) · License No: <strong>१५/१५०६०</strong><br />
+                Agency: <strong>Nepal Life Insurance Co. Ltd.</strong> · Valid Till: <strong>२०८५-१२-१३ (2029 CE)</strong>
+              </div>
+            </div>
+          </div>
+          <div class="credential-action">
+            <button type="button" class="btn btn-outline open-license-modal">View Official License</button>
+          </div>
+        </div>
       </div>
     </section>
+
+    <!-- Native Accessible Dialog Modal for Official License -->
+    <dialog id="license-modal" class="license-dialog" aria-labelledby="license-dialog-title">
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3 id="license-dialog-title">बीमा अभिकर्ताको इजाजतपत्र (Agent License)</h3>
+          <button type="button" class="dialog-close-btn close-license-modal" aria-label="Close dialog">&times;</button>
+        </div>
+        <p style="font-size: var(--fs-small); color: var(--color-ink-soft); margin-bottom: var(--space-2);">
+          Regulated under Section 91(2) of Insurance Act, 2079 &amp; Rule 41 of Insurance Regulations, 2081.
+        </p>
+
+        <table class="license-meta-table">
+          <tbody>
+            <tr>
+              <th>नियामक निकाय (Authority)</th>
+              <td>नेपाल बीमा प्राधिकरण (Nepal Insurance Authority)</td>
+            </tr>
+            <tr>
+              <th>इजाजतपत्र नं (License No.)</th>
+              <td><strong>१५/१५०६०</strong></td>
+            </tr>
+            <tr>
+              <th>अभिकर्ताको नाम (Agent Name)</th>
+              <td>श्री नविन ताम्राकार (Mr. Nabin Tamrakar)</td>
+            </tr>
+            <tr>
+              <th>बीमक कम्पनी (Insurer)</th>
+              <td>श्री नेपाल लाईफ इन्स्योरेन्स कं. लि. (Nepal Life Insurance Co. Ltd.)</td>
+            </tr>
+            <tr>
+              <th>इजाजतपत्र प्रकार (Category)</th>
+              <td>जीवन बीमा (Life Insurance)</td>
+            </tr>
+            <tr>
+              <th>जारी मिति (Issued Date)</th>
+              <td>२०६४-०९-२२ (06 Jan 2008)</td>
+            </tr>
+            <tr>
+              <th>पछिल्लो नवीकरण (Last Renewal)</th>
+              <td>२०८२-११-११ (23 Feb 2026)</td>
+            </tr>
+            <tr>
+              <th>बहाल रहने मिति (Valid Until)</th>
+              <td><span style="display:inline-block; padding:0.15rem 0.5rem; background:#e8f5e9; color:#2e7d32; font-weight:700; border-radius:4px;">२०८५-१२-१३ (26 Mar 2029)</span></td>
+            </tr>
+            <tr>
+              <th>अख्तियारवाला (Signatory)</th>
+              <td>सहायक निर्देशक (Assistant Director), नेपाल बीमा प्राधिकरण</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="dialog-actions">
+          <a href="assets/docs/Nabin's_AgentLicense.pdf" target="_blank" rel="noopener" class="btn btn-primary" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </a>
+          <button type="button" class="btn btn-outline close-license-modal">Close</button>
+        </div>
+      </div>
+    </dialog>
   </main>
 
   <footer class="site-footer">
