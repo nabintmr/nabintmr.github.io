@@ -17,24 +17,45 @@
   // Bilingual toggle (English / Nepali), persisted
   var STORAGE_KEY = 'site-lang';
   var htmlEl = document.documentElement;
-  var saved = null;
-  try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-  if (saved === 'en' || saved === 'ne') {
-    htmlEl.setAttribute('lang', saved);
-  }
 
-  function setLang(lang) {
-    htmlEl.setAttribute('lang', lang);
-    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  function updateButtons(lang) {
     document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
   }
 
-  document.querySelectorAll('.lang-toggle button').forEach(function (btn) {
-    btn.addEventListener('click', function () { setLang(btn.dataset.lang); });
-    btn.classList.toggle('active', btn.dataset.lang === (htmlEl.getAttribute('lang') || 'en'));
+  function setLang(lang) {
+    if (lang !== 'en' && lang !== 'ne') lang = 'en';
+    htmlEl.setAttribute('lang', lang);
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+    updateButtons(lang);
+  }
+
+  // Read saved language or default to en
+  var currentLang = 'en';
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'en' || saved === 'ne') currentLang = saved;
+  } catch (e) {}
+  setLang(currentLang);
+
+  // Global event delegation for lang toggle buttons
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.lang-toggle button') : null;
+    if (btn && btn.dataset && btn.dataset.lang) {
+      e.preventDefault();
+      setLang(btn.dataset.lang);
+    }
   });
+
+  // Re-sync on DOMContentLoaded if needed
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      updateButtons(htmlEl.getAttribute('lang') || 'en');
+    });
+  } else {
+    updateButtons(htmlEl.getAttribute('lang') || 'en');
+  }
 
   // Number-key shortcuts: 1=Home 2=Services 3=About 4=Gallery 5=Testimonials 6=Contact
   var PAGE_MAP = {

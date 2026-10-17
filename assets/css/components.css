@@ -217,14 +217,34 @@ form.contact-form { display: flex; flex-direction: column; gap: var(--space-2); 
 
 /* ---------- Lang toggle ---------- */
 .lang-toggle {
-  display: inline-flex; border: 1.5px solid var(--color-border);
-  border-radius: 999px; overflow: hidden; font-size: var(--fs-small); font-weight: 600;
+  display: inline-flex;
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  position: relative;
+  z-index: 10;
 }
 .lang-toggle button {
-  border: none; background: #fff; color: var(--color-ink-soft);
-  padding: 0.4rem 0.8rem; cursor: pointer;
+  border: none;
+  background: #fff;
+  color: var(--color-ink-soft);
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.lang-toggle button.active { background: var(--color-navy); color: #fff; }
+.lang-toggle button:hover {
+  background: var(--color-paper-alt);
+  color: var(--color-navy);
+}
+.lang-toggle button.active {
+  background: var(--color-navy);
+  color: #fff;
+  cursor: default;
+}
 
 [data-lang="ne"] { display: none; }
 html[lang="ne"] [data-lang="en"] { display: none; }
