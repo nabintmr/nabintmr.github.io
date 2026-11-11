@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Git sync for nabintmr.github.io — pull, verify, commit, push.
 
@@ -57,8 +57,7 @@ if ($remoteBranchExists) {
 if ($PullOnly) { Write-Step "PullOnly mode done."; exit 0 }
 
 # ── 1.5. Sync Gallery ───────────────────────────────────────────────
-$galleryChanges = git status --porcelain assets/images/gallery/
-if ($SyncGallery -or $galleryChanges) {
+if ($SyncGallery -and (Test-Path "assets/images/gallery")) {
     Write-Step "Normalizing gallery images and syncing gallery.html..."
     python scripts/normalize_gallery.py
 }
